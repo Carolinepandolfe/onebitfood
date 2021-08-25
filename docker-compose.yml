@@ -1,0 +1,23 @@
+version: '3.8'
+
+
+services:
+  box:
+    image: busybox
+    volumes:
+      - /box
+  app:
+    build: .
+    command: bash -c "echo > tmp/pids/server.pid || bundle check || bundle install && bundle exec rails s -p 3030 -b '0.0.0.0'"
+    volumes:
+      - .:/var/onebitfood
+      - type: volume
+        source: box
+        target: /box
+        volume:
+          nocopy: true
+    ports:
+      - '3030:3030'
+      
+volumes:
+  box:
